@@ -24,27 +24,24 @@ tomorrow = tomorrow.strftime('%Y-%m-%d')
 today = today.strftime('%Y-%m-%d')
 
 # 登陆账号信息
-username = '1019459067@qq.com'
-password = 'qazplm,.'
-# username = 'cl273685018'
-# password = 'pmrmengrong20'
-# username = '1043047984@qq.com'
-# password = 'zhong199412'
+username = '自己更新'
+password = '自己更新'
+
 
 # 购票用户信息
-username_buy = '肖伟华'
-user_idcard_buy = '430725199210201019'
+username_buy = '自己更新'
+user_idcard_buy = '自己更新'
 seat_name = '二等座' #'硬座'
 ticket_type_zh = '成人票'
 choose_seats = '1A'
 
 # 邮箱
 # 收件人
-email_to = '1019459067@qq.com'
+email_to = '自己更新@qq.com'
 
 # 发件人
-email_from = '18520156468@163.com'
-email_passwd = 'qazplm,.'
+email_from = '自己更新@163.com'
+email_passwd = '自己更新'
 # 出发时间
 train_date = '2018-02-22'#tomorrow
 # 出发地点

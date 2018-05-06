@@ -15,7 +15,7 @@ class Hi(Hello):
     def sayHi(self):
         print("Hi {0}".format(self._name))
 
-h = Hello("baidu")
+h = Hello("baidushang tang FF")
 h.sayHello()
 
 hi = Hi("xwh")
