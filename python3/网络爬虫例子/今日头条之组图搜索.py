@@ -44,6 +44,7 @@ def craw_images(id,image_count):
         "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36"
     }
     response = requests.get(url,headers=header)
+    
 
     # 获取名称
     title = re.findall(r"title: '(.*?)',",response.content)[0]
@@ -74,7 +75,7 @@ def craw_images(id,image_count):
         if not len(image_desc[i]):
             image_name = url.strip().split("/")[-1]
             
-        # image_name = str(i+1)+"、"+image_name    
+        image_name = str(i+1)+"、"+image_name    
         image_path = fileDir+image_name
         save_image(url,image_path)
         
