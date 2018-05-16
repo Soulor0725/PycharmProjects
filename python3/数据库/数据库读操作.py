@@ -67,13 +67,14 @@ def writeXlsx(headers,rowsAll):
         # 内容
         for i in range(len(rows)):
             row = rows[i]
-            
+            print('index---{0}---process---{1}--allCount---{2}--'.format(k,i+1,len(rowsAllList)))
             for j in range(len(headers)):
                 sheet.write(i+1,j,str(row[j]))           
 
-
+    timeWrite1 = datetime.datetime.now()
     workBook.save('xwh.xlsx')  
-    
+    timeWrite2 = datetime.datetime.now()
+    print("写入总时间: (0)".format(timeWrite2-timeWrite1))
 
 if __name__ == '__main__':
 
@@ -83,15 +84,15 @@ if __name__ == '__main__':
     timeRead1 = datetime.datetime.now()
     rows = readFromSqlite(sqlitePath,"select * from ComparedDoorModel")
     timeRead2 = datetime.datetime.now()
-    print("读取时间: (0)".format(timeRead2-timeRead1))
+    print("读取时间: (0)--总数目:(1)".format(timeRead2-timeRead1,len(rows)))
 
     d1 = datetime.datetime.now()
    
-    array = []
-    for i in range(0,50):
-        print('{0}--------'.format(i))
-        print(rows[i])
-        array.append(rows[i])
+    # array = []
+    # for i in range(0,50):
+    #     print('{0}--------'.format(i))
+    #     print(rows[i])
+    #     array.append(rows[i])
      
     d2 = datetime.datetime.now()
     print(d2-d1)        
@@ -99,4 +100,4 @@ if __name__ == '__main__':
     timeWrite1 = datetime.datetime.now()
     writeXlsx(headers,rows)
     timeWrite2 = datetime.datetime.now()
-    print("读取时间: (0)".format(timeWrite2-timeWrite1))
+    print("写入总时间: (0)".format(timeWrite2-timeWrite1))
