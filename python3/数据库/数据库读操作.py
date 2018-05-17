@@ -3,9 +3,11 @@ import sqlite3 as db
 import time
 import datetime
 import xlwt
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+
+
+splitNumber = 100000
+sqlitePath = 'FaceModelTestTool.sqlite'
+
 
 # 将一个列表分割成小列表
 def list_of_groups(init_list, childern_list_len):
@@ -30,6 +32,7 @@ def readFromSqlite(dbPath,cmdSql):
     cursor = conn.cursor()
 
     conn.row_factory = db.Row
+    
     cursor.execute(cmdSql)
     
     rows = cursor.fetchall()
@@ -50,13 +53,13 @@ def getTableHeader(dbPath,cmdSql):
     
     return arrayHeaders
 
-def writeXlsx(headers,rowsAll):
+def writeXlsx(headers,rowsAll,tableName):
     workBook = xlwt.Workbook()               #创建工作簿
 
-    rowsAllList = list_of_groups(rowsAll,50000)
+    rowsAllList = list_of_groups(rowsAll,splitNumber)
     for k in range(len(rowsAllList)):
         sheetName = 'sheet-{0}'.format(k+1)
-        print(sheetName)
+        print(tableName + sheetName)
         sheet = workBook.add_sheet(sheetName,cell_overwrite_ok=True)
 
         rows = rowsAllList[k]
@@ -67,37 +70,46 @@ def writeXlsx(headers,rowsAll):
         # 内容
         for i in range(len(rows)):
             row = rows[i]
-            print('index---{0}---process---{1}--allCount---{2}--'.format(k,i+1,len(rowsAllList)))
+            print("表名:{0} 总共 {1} 组,现在第 {2} 组|进行中进度:{3}%".format(tableName,len(rowsAllList),k,(i+1)/len(rows)*100))
             for j in range(len(headers)):
                 sheet.write(i+1,j,str(row[j]))           
 
     timeWrite1 = datetime.datetime.now()
-    workBook.save('xwh.xlsx')  
+    workBook.save('{0}.xlsx'.format(tableName))  
+
     timeWrite2 = datetime.datetime.now()
-    print("写入总时间: (0)".format(timeWrite2-timeWrite1))
+    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
 
-if __name__ == '__main__':
-
-    sqlitePath = 'FaceModelTestTool.sqlite'
-    headers = getTableHeader(sqlitePath,"PRAGMA table_info(ComparedDoorModel)")
+def getTable1(tableName):
+    headers = getTableHeader(sqlitePath,"PRAGMA table_info({0})".format(tableName))
 
     timeRead1 = datetime.datetime.now()
-    rows = readFromSqlite(sqlitePath,"select * from ComparedDoorModel")
+    rows = readFromSqlite(sqlitePath,"select * from {0}".format(tableName))
     timeRead2 = datetime.datetime.now()
-    print("读取时间: (0)--总数目:(1)".format(timeRead2-timeRead1,len(rows)))
+    print("表名:{0} 读取时间: {1}--总数目:{2}".format(tableName,timeRead2-timeRead1,len(rows)))
+    
+    timeWrite1 = datetime.datetime.now()
+    writeXlsx(headers,rows,tableName)
+    timeWrite2 = datetime.datetime.now()
+    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
 
-    d1 = datetime.datetime.now()
-   
-    # array = []
-    # for i in range(0,50):
-    #     print('{0}--------'.format(i))
-    #     print(rows[i])
-    #     array.append(rows[i])
-     
-    d2 = datetime.datetime.now()
-    print(d2-d1)        
+def getTable2(tableName):
+    headers = getTableHeader(sqlitePath,"PRAGMA table_info({0})".format(tableName))
+
+    timeRead1 = datetime.datetime.now()
+    rows = readFromSqlite(sqlitePath,"select * from {0}".format(tableName))
+    timeRead2 = datetime.datetime.now()
+    print("表名:{0} 读取时间: {0}--总数目:{1}".format(tableName,timeRead2-timeRead1,len(rows)))
 
     timeWrite1 = datetime.datetime.now()
-    writeXlsx(headers,rows)
+    writeXlsx(headers,rows,tableName)
     timeWrite2 = datetime.datetime.now()
-    print("写入总时间: (0)".format(timeWrite2-timeWrite1))
+    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
+
+if __name__ == '__main__':
+    # 表名 根据需要选择 ComparedDoorModel | ComparedModelModel
+
+    getTable1("ComparedDoorModel")
+    getTable2("ComparedModelModel")
+
+    
