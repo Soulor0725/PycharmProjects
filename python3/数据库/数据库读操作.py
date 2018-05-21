@@ -1,11 +1,10 @@
-# -*- coding:utf8 -*-
 import sqlite3 as db 
 import time
 import datetime
 import xlwt
 
 
-splitNumber = 100000
+splitNumber = 50000
 sqlitePath = 'FaceModelTestTool.sqlite'
 
 
@@ -57,6 +56,7 @@ def writeXlsx(headers,rowsAll,tableName):
     workBook = xlwt.Workbook()               #创建工作簿
 
     rowsAllList = list_of_groups(rowsAll,splitNumber)
+    print(len(rowsAllList))
     for k in range(len(rowsAllList)):
         sheetName = 'sheet-{0}'.format(k+1)
         print(tableName + sheetName)
@@ -70,7 +70,8 @@ def writeXlsx(headers,rowsAll,tableName):
         # 内容
         for i in range(len(rows)):
             row = rows[i]
-            print("表名:{0} 总共 {1} 组,现在第 {2} 组|进行中进度:{3}%".format(tableName,len(rowsAllList),k,(i+1)/len(rows)*100))
+            # print(row)
+            print("表名:{0} 总共 {1} 组,现在第 {2} 组|进行中 {3} 进度:{4}%".format(tableName,len(rowsAllList),k+1,i+1,(i+1)/len(rows)*100))
             for j in range(len(headers)):
                 sheet.write(i+1,j,str(row[j]))           
 
@@ -78,9 +79,9 @@ def writeXlsx(headers,rowsAll,tableName):
     workBook.save('{0}.xlsx'.format(tableName))  
 
     timeWrite2 = datetime.datetime.now()
-    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
+    print("表名:{0} 写入Excel总时间: {1}".format(tableName,timeWrite2-timeWrite1))
 
-def getTable1(tableName):
+def getTable(tableName):
     headers = getTableHeader(sqlitePath,"PRAGMA table_info({0})".format(tableName))
 
     timeRead1 = datetime.datetime.now()
@@ -88,28 +89,20 @@ def getTable1(tableName):
     timeRead2 = datetime.datetime.now()
     print("表名:{0} 读取时间: {1}--总数目:{2}".format(tableName,timeRead2-timeRead1,len(rows)))
     
-    timeWrite1 = datetime.datetime.now()
-    writeXlsx(headers,rows,tableName)
-    timeWrite2 = datetime.datetime.now()
-    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
-
-def getTable2(tableName):
-    headers = getTableHeader(sqlitePath,"PRAGMA table_info({0})".format(tableName))
-
-    timeRead1 = datetime.datetime.now()
-    rows = readFromSqlite(sqlitePath,"select * from {0}".format(tableName))
-    timeRead2 = datetime.datetime.now()
-    print("表名:{0} 读取时间: {0}--总数目:{1}".format(tableName,timeRead2-timeRead1,len(rows)))
-
-    timeWrite1 = datetime.datetime.now()
-    writeXlsx(headers,rows,tableName)
-    timeWrite2 = datetime.datetime.now()
-    print("表名:{0} 写入总时间: {1}".format(tableName,timeWrite2-timeWrite1))
+    if not len(rows):
+        print("表名:{0} 没有数据".format(tableName))
+    else:    
+        timeWrite1 = datetime.datetime.now()
+        writeXlsx(headers,rows,tableName)
+        timeWrite2 = datetime.datetime.now()
+        print("表名:{0} 全过程总花费时间: {1}".format(tableName,timeWrite2-timeWrite1))
 
 if __name__ == '__main__':
-    # 表名 根据需要选择 ComparedDoorModel | ComparedModelModel
+    # 表名 根据需要选择 ComparedDoorModel | ComparedModelModel | ThresholdModelModel | ThresholdDoorModel
 
-    getTable1("ComparedDoorModel")
-    getTable2("ComparedModelModel")
+    getTable("ComparedDoorModel")
+    getTable("ComparedModelModel")
+    getTable("ThresholdModelModel")
+    getTable("ThresholdDoorModel")
 
     
